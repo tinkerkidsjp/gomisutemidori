@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title></title>
+<style>
+button {
+    margin: 10px;
+    font-size: 20px;
+}
+</style>
+<script>
+
+//変数を前もって作っておく
+var date, month, day, youbi, year;
+
+function getNow() {
+    date = new Date();
+    //月を取得(0から始まるため＋1)
+    month = date.getMonth() + 1;
+    //日を取得
+    day = date.getDate();
+    //曜日を取得
+    youbi = date.getDay();
+    //年を取得
+    year = date.getFullYear();
+}
+function answer(year2, month2, date2) {
+    //曜日が数字になっているので変換する
+    var dayOfWeekStrJP = [ "日", "月", "火", "水", "木", "金", "土" ] ;
+    var answerdate = new Date(year2, month2 - 1, date2)
+    var answerday = answerdate.getDay()
+    if (year2 == 2023 && month2 > 3) {
+        alert("次の収集日はホームページでご確認ください。")
+    } else {
+        alert("次の収集日は" + month2 + "月" + date2 + "日(" + dayOfWeekStrJP[answerday] + ")です。")
+    } 
+}
+
+function moeru() {
+    getNow();
+    //日火木の場合
+    if (youbi == 0 || youbi == 2 || youbi == 4) {
+        if (month == 11) {
+            if (day <= 28) {
+                var shushubi = day + 2;
+            } else {
+                var shushubi = day - 28;
+                month = month + 1;
+            }
+            answer(year, month, shushubi);
+        } else if (month == 12 || month == 1 || month == 3) {
+            if (day <= 29) {
+                var shushubi = day + 2;
+            } else {
+                var shushubi = day - 29;
+                if (month == 12) {
+                    month = month - 11;
+                    //年をまたぐ為+1
+                    year = year + 1;
+                } else {
+                    month = month + 1;
+                }
+            }
+            answer(year, month, shushubi);
+        } else if (month == 2) {
+            if (day <= 26) {
+                var shushubi = day + 2;
+            } else {
+                var shushubi = day - 26;
+                month = month + 1;
+            }
+            answer(year, month, shushubi);
+        }
+    //月水金の場合
+    } else if (youbi == 1 || youbi == 3 || youbi == 5) {
+        if (month == 11) {
+            if (day <= 29) {
+                var shushubi = day + 1;
+            } else {
+                var shushubi = day - 29;
+                month = month + 1;
+            }
+            answer(year, month, shushubi);
+        } else if (month == 12 || month == 1 || month == 3) {
+            if (day <= 30) {
+                var shushubi = day + 1;
+            } else {
+                var shushubi = day - 30;
+                if (month == 12) {
+                    month = month - 11;
+                    year = year + 1;
+                } else {
+                    month = month + 1;
+                }
+            }
+            answer(year, month, shushubi);
+        } else if (month == 2) {
+            if (day <= 27) {
+                var shushubi = day + 1;
+            } else {
+                var shushubi = day - 27;
+                month = month + 1;
+            }
+            answer(year, month, shushubi);
+        }
+    //土の場合
+    } else {
+        if (month == 11) {
+            if (day <= 27) {
+                var shushubi = day + 3;
+            } else {
+                var shushubi = day - 27;
+                month = month + 1;
+            }
+            answer(year, month, shushubi);
+        } else if (month == 12 || month == 1 || month == 3) {
+            if (day <= 28) {
+                var shushubi = day + 3;
+            } else {
+                var shushubi = day - 28;
+                if (month == 12) {
+                    month = month - 11;
+                    year = year + 1;
+                } else {
+                    month = month + 1;
+                }
+            }
+            answer(year, month, shushubi);
+        } else if (month == 2) {
+            if (day <= 25) {
+                var shushubi = day + 3;
+            } else {
+                var shushubi = day - 25;
+                month = month + 1;
+            }
+            answer(year, month, shushubi);
+        }
+    }
+}
+
+var moenai = ["0118","0215","0315","1109","1214"];
+function moenaianswer() {
+    getNow();
+    if (month < 12) {
+        //moenaiを1番目から最後まで１つずつ比べる
+        for (var i = 0; i < moenai.length; i++) {
+            if (month == moenai[i].slice(0,2) && day < moenai[i].slice(2,4)) {
+                //Numberで文字列を数値に変換する
+                answer(year, Number(moenai[i].slice(0,2)), Number(moenai[i].slice(2,4)));
+                //for文から抜ける
+                break;
+            }
+            if (month < moenai[i].slice(0,2)) {
+                answer(year, Number(moenai[i].slice(0,2)), Number(moenai[i].slice(2,4)));
+                break;
+            }
+        }
+    } else {
+        if (day < 14) {
+            answer(year, 12,14);
+        } else {
+            year = year + 1
+            answer(year, 1, 18);
+        }
+    }
+}
+var akikan = ["0111","0125","0208","0222","0308","0322","1102","1116","1207","1221"];
+function akikananswer() {
+    getNow();
+    if (month < 12) {
+        //akikanを1番目から最後まで１つずつ比べる
+        for (var i = 0; i < akikan.length; i++) {
+            if (month == akikan[i].slice(0,2) && day < akikan[i].slice(2,4)) {
+                answer(year, Number(akikan[i].slice(0,2)), Number(akikan[i].slice(2,4)));
+                //for文から抜ける
+                break;
+            }
+            if (month < akikan[i].slice(0,2)) {
+                answer(year, Number(akikan[i].slice(0,2)), Number(akikan[i].slice(2,4)));
+                break;
+            }
+        }
+    } else {
+        if (day < 21) {
+            answer(year, 12, 21);
+        } else {
+            year = year + 1
+            answer(year, 1, 11);
+        }
+    }
+}
+var roru = ["0111","0208","0308","1102","1207"];
+function roruanswer() {
+    getNow();
+    if (month < 12) {
+        for (var i = 0; i < roru.length; i++) {
+            if (month == roru[i].slice(0,2) && day < roru[i].slice(2,4)) {
+                answer(year, Number(roru[i].slice(0,2)), Number(roru[i].slice(2,4)));
+                break;
+            }
+            if (month < roru[i].slice(0,2)) {
+                answer(year, Number(roru[i].slice(0,2)), Number(roru[i].slice(2,4)));
+                break;
+            }
+        }
+    } else {
+        if (day < 7) {
+            answer(year, 12, 7);
+        } else {
+            year = year + 1
+            answer(year, 1, 11);
+        }
+    }
+}
+var kohu = ["0125","0222","0322","1116","1221"];
+function kohuanswer() {
+    getNow();
+    if (month < 12) {
+        for (var i = 0; i < kohu.length; i++) {
+            if (month == kohu[i].slice(0,2) && day < kohu[i].slice(2,4)) {
+                answer(year, Number(kohu[i].slice(0,2)), Number(kohu[i].slice(2,4)));
+                break;
+            }
+            if (month < kohu[i].slice(0,2)) {
+                answer(year, Number(kohu[i].slice(0,2)), Number(kohu[i].slice(2,4)));
+                break;
+            }
+        }
+    } else {
+        if (day < 21) {
+            answer(year, 12, 21);
+        } else {
+            year = year + 1
+            answer(year, 1, 25);
+        }
+    }
+}
+var shin = ["0106","0119","0203","0215","0303","0316","1104","1117","1205","1215"];
+function shinanswer() {
+    getNow();
+    if (month < 12) {
+        for (var i = 0; i < shin.length; i++) {
+            if (month == shin[i].slice(0,2) && day < shin[i].slice(2,4)) {
+                answer(year, Number(shin[i].slice(0,2)), Number(shin[i].slice(2,4)));
+                break;
+            }
+            if (month < shin[i].slice(0,2)) {
+                answer(year, Number(shin[i].slice(0,2)), Number(shin[i].slice(2,4)));
+                break;
+            }
+        }
+    } else {
+        if (day < 15) {
+            answer(year, 12, 15);
+        } else {
+            year = year + 1
+            answer(year, 1, 6);
+        }
+    }
+}
+var bin = ["0120","0216","0317","1118","1216"];
+function binanswer() {
+    getNow();
+    if (month < 12) {
+        for (var i = 0; i < bin.length; i++) {
+            if (month == bin[i].slice(0,2) && day < bin[i].slice(2,4)) {
+                answer(year, Number(bin[i].slice(0,2)), Number(bin[i].slice(2,4)));
+                break;
+            }
+            if (month < bin[i].slice(0,2)) {
+                answer(year, Number(bin[i].slice(0,2)), Number(bin[i].slice(2,4)));
+                break;
+            }
+        }
+    } else {
+        if (day < 16) {
+            answer(year, 12, 16);
+        } else {
+            year = year + 1
+            answer(year, 1, 20);
+        }
+    }
+}
+</script>
+</head>
+<body style="text-align:center">
+<h1>新発田市緑町<br>ゴミ捨てナビ</h1>
+<p>（2022.11.01~2023.3.30まで）</p>
+<!-- 燃えるゴミボタンを押すとanswerが実行される -->
+<button onclick="moeru()">燃えるゴミ</button><br>
+<button onclick="moenaianswer()">燃えないゴミ</button><br>
+<button onclick="akikananswer()">空き缶類 等</button><br>
+<button onclick="roruanswer()">発泡スチロール</button><br>
+<button onclick="kohuanswer()">古布</button><br>
+<button onclick="shinanswer()">新聞、段ボール、チラシ</button><br>
+<button onclick="binanswer()">空きびん</button>
+</body>
+</html>
